@@ -1,0 +1,118 @@
+/* Background and Layout */
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb); /* Light blue gradient */
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .header {
+    background-color: #2196f3; /* Primary blue color */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 4px solid #0d47a1; /* Darker blue for emphasis */
+    position: relative; /* Make sure the sign-out button is positioned absolutely */
+  }
+  
+  .signOutButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #dc3545; /* Red color for sign-out */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .signOutButton:hover {
+    background-color: #c82333; /* Darker red for hover effect */
+  }
+  
+  .mainContent {
+    flex: 1;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .footer {
+    background-color: #2196f3; /* Same primary blue color */
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-top: 4px solid #0d47a1; /* Darker blue for emphasis */
+  }
+  
+  /* Card Styles */
+  .card {
+    background: #ffffff; /* White background for cards */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .cardTitle {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #333333;
+  }
+  
+  .cardContent {
+    font-size: 1em;
+    color: #666666;
+  }
+  
+  /* Button Styles */
+  .button {
+    background-color: #4caf50; /* Green color for buttons */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #388e3c; /* Darker green for hover effect */
+  }
+  
+  /* Form Styles */
+  .formControl {
+    margin-bottom: 20px;
+  }
+  
+  .formLabel {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .textField {
+    width: 100%;
+  }
+  
+  .select {
+    width: 100%;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .container {
+      padding: 10px;
+    }
+    
+    .card {
+      padding: 15px;
+    }
+    
+    .button {
+      padding: 8px 16px;
+    }
+  }
+  
