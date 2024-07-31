@@ -1,21 +1,9 @@
-// src/components/AddItemForm.js
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Snackbar, Alert, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { Snackbar, Alert } from '@mui/material';
 import { collection, addDoc, updateDoc, doc, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../firebase'; // Adjust import path as necessary
+import { db } from '../firebase';
 
-const categories = [
-  'Grains',
-  'Dairy',
-  'Snacks',
-  'Vegetables',
-  'Fruits',
-  'Beverages',
-  'Frozen',
-  'Other'
-];
-
-const AddItemForm = ({ onAdd, currentItem, onClose }) => {
+const AddItemForm = ({ onAdd, currentItem, onClose, userId }) => {
   const [itemName, setItemName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
@@ -46,80 +34,53 @@ const AddItemForm = ({ onAdd, currentItem, onClose }) => {
     }
 
     const itemsRef = collection(db, 'pantryItems');
-    const q = query(itemsRef, where('name', '==', itemName), where('expiryDate', '==', expiryDate));
-    const querySnapshot = await getDocs(q);
+    const q = query(
+      itemsRef,
+      where('userId', '==', userId),
+      where('name', '==', itemName),
+      where('expiryDate', '==', expiryDate),
+      where('category', '==', category)
+    );
 
-    if (!querySnapshot.empty) {
-      const itemDoc = doc(db, 'pantryItems', querySnapshot.docs[0].id);
-      const existingItem = querySnapshot.docs[0].data();
-      const newQuantity = existingItem.quantity + parseInt(quantity, 10);
-      await updateDoc(itemDoc, { quantity: newQuantity });
-      setMessage(`Updated item ${itemName} with new quantity ${newQuantity}`);
-    } else {
-      await addDoc(itemsRef, { name: itemName, quantity: parseInt(quantity, 10), expiryDate, category });
-      setMessage(`Added new item ${itemName} with quantity ${quantity}`);
+    try {
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        // Update the existing item
+        const itemDoc = doc(db, 'pantryItems', querySnapshot.docs[0].id);
+        const existingItem = querySnapshot.docs[0].data();
+        const newQuantity = existingItem.quantity + parseInt(quantity, 10);
+        await updateDoc(itemDoc, { quantity: newQuantity });
+        setMessage(`Updated item ${itemName} with new quantity ${newQuantity}`);
+      } else {
+        // Add a new item
+        await addDoc(itemsRef, { userId, name: itemName, quantity: parseInt(quantity, 10), expiryDate, category });
+        setMessage(`Added new item ${itemName} with quantity ${quantity}`);
+      }
+      setSeverity('success');
+    } catch (error) {
+      console.error('Error updating or adding item:', error);
+      setMessage('An error occurred while updating or adding the item');
+      setSeverity('error');
     }
 
+    // Clear form and close
     setItemName('');
     setQuantity('');
     setExpiryDate('');
     setCategory('');
-    onAdd();
-    onClose();
+    onAdd(); // Notify parent of the action
+    onClose(); // Close the form
   };
 
   return (
     <div>
-      <TextField
-        label="Item Name"
-        value={itemName}
-        onChange={(e) => setItemName(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Quantity"
-        type="number"
-        value={quantity}
-        onChange={(e) => setQuantity(e.target.value)}
-        fullWidth
-        margin="normal"
-        error={quantity < 0}
-        helperText={quantity < 0 ? 'Quantity cannot be negative' : ''}
-      />
-      <TextField
-        label="Expiry Date"
-        type="date"
-        value={expiryDate}
-        onChange={(e) => setExpiryDate(e.target.value)}
-        fullWidth
-        margin="normal"
-        InputLabelProps={{ shrink: true }}
-      />
-      <FormControl fullWidth margin="normal">
-        <InputLabel>Category</InputLabel>
-        <Select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          label="Category"
-        >
-          {categories.map((cat) => (
-            <MenuItem key={cat} value={cat}>
-              {cat}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <Button onClick={handleSubmit} variant="contained" color="primary">
-        {currentItem ? 'Update Item' : 'Add Item'}
-      </Button>
-      {message && (
-        <Snackbar open={Boolean(message)} autoHideDuration={6000} onClose={() => setMessage('')}>
-          <Alert onClose={() => setMessage('')} severity={severity}>
-            {message}
-          </Alert>
-        </Snackbar>
-      )}
+      {/* Form fields are removed as requested */}
+      <Snackbar open={Boolean(message)} autoHideDuration={6000} onClose={() => setMessage('')}>
+        <Alert onClose={() => setMessage('')} severity={severity}>
+          {message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

@@ -4,8 +4,8 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import AddItemForm from '../src/AddItemForm';
 import PantryList from '../src/PantryList';
-import PantryHistory from '../src/PantryHistory'; // Import PantryHistory
-import styles from '../styles/Pantry.module.css'; // Ensure this path is correct
+import PantryHistory from '../src/PantryHistory';
+import styles from '../styles/Pantry.module.css';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@mui/material';
 
 const Pantry = () => {
@@ -13,16 +13,16 @@ const Pantry = () => {
   const [refresh, setRefresh] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false); // State for the dialog
-  const [showHistory, setShowHistory] = useState(false); // State for showing history
+  const [openDialog, setOpenDialog] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
 
   const handleAdd = () => {
-    setRefresh(!refresh); // Trigger re-render
+    setRefresh(!refresh);
   };
 
   const handleEdit = (item) => {
     setCurrentItem(item);
-    setIsFormOpen(true); // Open form for editing
+    setIsFormOpen(true);
   };
 
   const handleCloseForm = () => {
@@ -31,26 +31,27 @@ const Pantry = () => {
   };
 
   const handleSignOutClick = () => {
-    setOpenDialog(true); // Show confirmation dialog
+    setOpenDialog(true);
   };
 
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      router.push('/auth'); // Redirect to the authentication page
+      router.push('/auth');
     } catch (error) {
       console.error('Error signing out: ', error);
     } finally {
-      setOpenDialog(false); // Close the dialog after attempting sign-out
+      setOpenDialog(false);
     }
   };
 
   const handleDialogClose = () => {
-    setOpenDialog(false); // Close dialog without signing out
+    setOpenDialog(false);
   };
 
   const toggleHistory = () => {
-    setShowHistory(!showHistory); // Toggle the history view
+    console.log('Toggling history:', !showHistory);  // Debug: log toggle action
+    setShowHistory(!showHistory);
   };
 
   return (
@@ -59,21 +60,20 @@ const Pantry = () => {
         <button onClick={handleSignOutClick} className={styles.signOutButton}>
           Sign Out
         </button>
-        <h1>Online Pantry manager</h1>
+        <h1>Online Pantry Manager</h1>
       </header>
       <main className={styles.mainContent}>
         <AddItemForm onAdd={handleAdd} currentItem={currentItem} onClose={handleCloseForm} />
-        <PantryList key={refresh} onEdit={handleEdit} /> {/* Pass `onEdit` to PantryList */}
+        <PantryList key={refresh} onEdit={handleEdit} />
         <Button variant="contained" color="secondary" onClick={toggleHistory}>
           {showHistory ? 'Hide History' : 'Show History'}
         </Button>
-        {showHistory && <PantryHistory />} {/* Conditionally render PantryHistory */}
+        {showHistory && <PantryHistory />}
       </main>
       <footer className={styles.footer}>
-        <p>&copy; GB Pantry manager</p>
+        <p>&copy; GB Pantry Manager</p>
       </footer>
 
-      {/* Confirmation Dialog */}
       <Dialog open={openDialog} onClose={handleDialogClose}>
         <DialogTitle>Confirm Sign Out</DialogTitle>
         <DialogContent>

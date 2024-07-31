@@ -2,22 +2,22 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../firebase";
-import styles from "../styles/Auth.module.css"; // Import the CSS module
+import styles from "../styles/Auth.module.css";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, TextField } from '@mui/material';
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isSignIn, setIsSignIn] = useState(true); // Toggle between sign in and sign up
-  const [openForgotPassword, setOpenForgotPassword] = useState(false); // State for forgot password dialog
+  const [isSignIn, setIsSignIn] = useState(true);
+  const [openForgotPassword, setOpenForgotPassword] = useState(false);
   const router = useRouter();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/pantry"); // Redirect to the pantry page
+      router.push("/pantry");
     } catch (error) {
       if (error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
         setError("Wrong email or password");
@@ -31,7 +31,7 @@ const Auth = () => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      router.push("/pantry"); // Redirect to the pantry page
+      router.push("/pantry");
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setError("Sorry, this email has already been registered");
@@ -45,7 +45,7 @@ const Auth = () => {
     try {
       await sendPasswordResetEmail(auth, email);
       setError("Password reset email sent. Check your inbox.");
-      setOpenForgotPassword(false); // Close the dialog after sending the email
+      setOpenForgotPassword(false);
     } catch (error) {
       setError("Failed to send password reset email. Please try again.");
     }
@@ -95,7 +95,6 @@ const Auth = () => {
         </button>
       </div>
 
-      {/* Forgot Password Dialog */}
       <Dialog open={openForgotPassword} onClose={handleCloseForgotPasswordDialog}>
         <DialogTitle>Forgot Password</DialogTitle>
         <DialogContent>
